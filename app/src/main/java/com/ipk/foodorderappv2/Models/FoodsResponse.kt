@@ -1,11 +1,10 @@
 package com.ipk.foodorderappv2.Models
 
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class FoodsResponse(
     @SerializedName("yemekler")
-    val yemekler: List<Yemekler>,
+    val foods: List<Foods>,
     @SerializedName("success")
     val success: Int
 )

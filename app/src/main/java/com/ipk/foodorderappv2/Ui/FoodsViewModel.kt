@@ -12,6 +12,7 @@ import retrofit2.Response
 
 class FoodsViewModel(val foodsRepository: FoodsRepository): ViewModel() {
     val foods: MutableLiveData<Resource<FoodsResponse>> = MutableLiveData()
+    val searchedFoods: MutableLiveData<Resource<FoodsResponse>> = MutableLiveData()
 
     init {
         getFoods()
@@ -24,7 +25,23 @@ class FoodsViewModel(val foodsRepository: FoodsRepository): ViewModel() {
         foods.postValue(handleFoodsResponse(response))
     }
 
+    fun searchedFoods(foodName:String)= viewModelScope.launch {
+        searchedFoods.postValue(Resource.Loading())
+        val response=foodsRepository.searchedFoods(foodName)
+        foods.postValue(handleSearchedFoodsResponse(response))
+    }
+
     private fun handleFoodsResponse(response: Response<FoodsResponse>): Resource<FoodsResponse>{
+        if(response.isSuccessful){
+            Log.e("takip", "resres: ${response.body()}")
+            response.body()?.let { resultResponse->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    private fun handleSearchedFoodsResponse(response: Response<FoodsResponse>): Resource<FoodsResponse>{
         if(response.isSuccessful){
             Log.e("takip", "resres: ${response.body()}")
             response.body()?.let { resultResponse->

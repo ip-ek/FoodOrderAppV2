@@ -1,4 +1,4 @@
-package com.ipk.foodorderappv2.Ui
+package com.ipk.foodorderappv2.Ui.Activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

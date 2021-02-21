@@ -1,4 +1,4 @@
-package com.ipk.foodorderappv2.Ui
+package com.ipk.foodorderappv2.Ui.Activities
 
 import android.content.Intent
 import android.os.Build
@@ -7,7 +7,6 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import android.os.Handler
 import com.ipk.foodorderappv2.R
-import com.ipk.foodorderappv2.Ui.MainActivity
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

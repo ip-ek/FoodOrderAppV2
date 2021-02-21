@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface FoodsApi {
 
-    @GET("tum_sepet_yemekler.php")
+    @GET("tum_yemekler.php")
     suspend fun apiGetFoods(): Response<FoodsResponse> //suspend for coroutine
 
     @POST("tum_yemekler_arama.php")

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(
         tableName = "yemekler"
 )
-data class Yemekler(
+data class Foods(
     @PrimaryKey(autoGenerate = true)
     var food_id:Int?=null,
     @SerializedName("yemek_adi")

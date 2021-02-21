@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.ipk.foodorderappv2.Models.Yemekler
+import androidx.recyclerview.widget.SortedList
+import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
 import com.ipk.foodorderappv2.Util.Constants.Companion.PICS_URL
 import com.squareup.picasso.Picasso
@@ -18,12 +19,12 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
 
     inner class CardHolder(view: View):RecyclerView.ViewHolder(view)
 
-    private val differCallBack=object :DiffUtil.ItemCallback<Yemekler>(){
-        override fun areItemsTheSame(oldItem: Yemekler, newItem: Yemekler): Boolean {
+    private val differCallBack=object :DiffUtil.ItemCallback<Foods>(){
+        override fun areItemsTheSame(oldItem: Foods, newItem: Foods): Boolean {
             return  oldItem.yemek_id==newItem.yemek_id
         }
 
-        override fun areContentsTheSame(oldItem: Yemekler, newItem: Yemekler): Boolean {
+        override fun areContentsTheSame(oldItem: Foods, newItem: Foods): Boolean {
             return oldItem==newItem
         }
     }
@@ -66,7 +67,7 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
         }
     }
 
-    fun openners(holder: CardHolder, food: Yemekler){
+    fun openners(holder: CardHolder, food: Foods){
         holder.itemView.apply {
             btn_min.setOnClickListener {
                 if(tw_count.text!="1"){

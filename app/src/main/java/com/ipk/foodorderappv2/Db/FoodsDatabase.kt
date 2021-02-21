@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.ipk.foodorderappv2.Models.Yemekler
+import com.ipk.foodorderappv2.Models.Foods
 
 @Database(
-    entities = [Yemekler::class],
+    entities = [Foods::class],
     version =1
 )
 abstract class FoodsDatabase: RoomDatabase() {
