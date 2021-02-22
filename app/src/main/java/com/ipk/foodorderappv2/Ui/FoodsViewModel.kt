@@ -15,6 +15,7 @@ import retrofit2.Response
 class FoodsViewModel(val foodsRepository: FoodsRepository): ViewModel() {
     val foods: MutableLiveData<Resource<FoodsResponse>> = MutableLiveData()
     val searchedFoods: MutableLiveData<Resource<FoodsResponse>> = MutableLiveData()
+    val postInsertFoods: MutableLiveData<Resource<BasketResponse>> = MutableLiveData()
 
     init {
         getFoods()
@@ -46,6 +47,27 @@ class FoodsViewModel(val foodsRepository: FoodsRepository): ViewModel() {
     private fun handleSearchedFoodsResponse(response: Response<FoodsResponse>): Resource<FoodsResponse>{
         if(response.isSuccessful){
             //Log.e("takip", "serser: ${response.body()}")
+            response.body()?.let { resultResponse->
+                return Resource.Success(resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    fun postInsertFoods(yemek_id:String,
+                        yemek_adi: String,
+                        yemek_resim_adi:String,
+                        yemek_fiyat:String,
+                        yemek_siparis_adet:String) = viewModelScope.launch {
+        postInsertFoods.postValue(Resource.Loading())
+        val response =foodsRepository.postInsert(yemek_id,yemek_adi,
+                yemek_resim_adi,yemek_fiyat,yemek_siparis_adet)
+        postInsertFoods.postValue(handleInsertResponse(response))
+    }
+
+    private fun handleInsertResponse(response: Response<BasketResponse>): Resource<BasketResponse> {
+        if(response.isSuccessful){
+            //Log.e("takip", "insert resres: ${response.body()}")
             response.body()?.let { resultResponse->
                 return Resource.Success(resultResponse)
             }
