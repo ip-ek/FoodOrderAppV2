@@ -1,6 +1,7 @@
 package com.ipk.foodorderappv2.Adapters
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
+import com.ipk.foodorderappv2.Ui.Activities.DetailedFoodActivity
+import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
 import com.ipk.foodorderappv2.Util.Constants.Companion.PICS_URL
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.card_design.*
 import kotlinx.android.synthetic.main.card_design.view.*
 
 class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.CardHolder>(){
@@ -47,7 +51,7 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
 
     override fun onBindViewHolder(holder: CardHolder, position: Int) {
         val food = differ.currentList[position]
-        Log.e("takip","adapter ${differ.currentList}")
+       // Log.e("takip","adapter ${differ.currentList}")
         holder.itemView.apply {
             val url2 = "${PICS_URL}${food.yemek_resim_adi}"
             Picasso.get().load(url2).into(card_food_img)
@@ -79,16 +83,17 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
                 tw_count.text=(tw_count.text.toString().toInt()+1).toString()
             }
 
-            /*btn_add_open.setOnClickListener {
-                addToBasket(holder, food,tw_count.text.toString())
-            }*/
+            btn_add_open.setOnClickListener {
+                FoodRequests().addToBasket(mContext, food,tw_count.text.toString())
+                card_detail.visibility= View.GONE
+            }
 
-            /*btn_more.setOnClickListener {
-                val intent= Intent(mContext, DetailedFoodActivity::class.java)
-                intent.putExtra("food", food)
-                mContext.startActivity(intent)
+           btn_more.setOnClickListener {
+                val intent= Intent(context, DetailedFoodActivity::class.java)
+                intent.putExtra("food",food)
+                context.startActivity(intent)
                 card_detail.visibility=View.GONE
-            }*/
+            }
         }
 
     } //openners

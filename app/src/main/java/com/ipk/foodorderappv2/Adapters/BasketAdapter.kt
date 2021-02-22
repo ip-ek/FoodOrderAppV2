@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.R
+import com.ipk.foodorderappv2.Ui.Requests.BasketRequests
 import com.ipk.foodorderappv2.Util.Constants
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card_basket.view.*
+
 
 class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.CardHolder>() {
 
@@ -29,6 +31,12 @@ class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.
     }
 
     val differ= AsyncListDiffer(this, differCallBack)
+
+    fun submitList(data: List<BasketFoods>){
+        differ.submitList(data)
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketAdapter.CardHolder {
         return CardHolder(
                 LayoutInflater.from(mContext).inflate(
@@ -46,7 +54,7 @@ class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.
 
     override fun onBindViewHolder(holder: BasketAdapter.CardHolder, position: Int) {
         val order = differ.currentList[position]
-        Log.e("takip","adapter ${differ.currentList}")
+        Log.e("takip", "adapter ${differ.currentList}")
         holder.itemView.apply {
             val url2 = "${Constants.PICS_URL}${order.yemek_resim_adi}"
             Picasso.get().load(url2).into(basket_food_img)
@@ -54,7 +62,12 @@ class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.
             basket_food_price.text="${order.yemek_fiyat.toInt()*order.yemek_siparis_adet.toInt()} ${mContext.getString(R.string.TL)}"
             card_basket_name.text="${order.yemek_adi}"
             card_basket_det_price.text="${order.yemek_siparis_adet} x ${order.yemek_fiyat} ${mContext.getString(R.string.TL)}"
-            //basket_delete.
+            basket_delete.setOnClickListener {
+                Log.e("takip", "basket adap ${order.yemek_id}")
+                BasketRequests().deleteFromBasket(mContext, order.yemek_id)
+            }
         }
     }
+
+
 }

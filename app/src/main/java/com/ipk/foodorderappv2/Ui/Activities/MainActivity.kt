@@ -13,17 +13,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipk.foodorderappv2.Adapters.FoodsAdapter
+import com.ipk.foodorderappv2.Db.BasketDatabase
 import com.ipk.foodorderappv2.Db.FoodsDatabase
+import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
+import com.ipk.foodorderappv2.Repository.BasketRepository
 import com.ipk.foodorderappv2.Repository.FoodsRepository
+import com.ipk.foodorderappv2.Ui.BasketViewModel
+import com.ipk.foodorderappv2.Ui.BasketViewModelProviderFactory
 import com.ipk.foodorderappv2.Ui.FoodsViewModel
 import com.ipk.foodorderappv2.Ui.FoodsViewModelProviderFactory
+import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
 import com.ipk.foodorderappv2.Util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.card_design.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -50,11 +58,20 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(FoodsViewModel::class.java)
 
         setupRv()
-        allFoods()
+        FoodRequests().allFoods(this)
 
         fab_main.setOnClickListener{
             startActivity(Intent(this@MainActivity, BasketActivity::class.java))
         }
+
+        //viewModel.saveFood(food)
+        // in saved news
+        /*viewModel.getSavedFoods().observe(this, Observer{ foods->
+            foodsAdapter.differ.submitList(foods)
+        })
+        //delete in adapter
+        val food=foodsAdapter.differ.currentList[position]
+        viewModel.deleteFood(food)*/
 
     } //onCreate
 
@@ -66,55 +83,29 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }//setupRv
 
-    fun allFoods(){
-        viewModel.foods.observe(this, Observer { response ->
-            when (response) {
-                is Resource.Success -> {
-                    Log.e("takip", " foods adapter okey")
-                    response.data?.let { foodsResponse ->
-                        if (foodsResponse.foods == null) {
-                            foodList = ArrayList()
-                        } else {
-                            foodList = foodsResponse.foods.toCollection(ArrayList())
-                        }
-                        foodsAdapter.differ.submitList(foodList)
-                    }
-                }
-                is Resource.Error -> {
-                    response.message?.let { message ->
-                        Log.e("takip", "foods adapter error")
-                    }
-                }
-                is Resource.Loading -> {
-                    //you can create a loading bar
-                    Log.e("takip", "foods adapter loading")
-                }
-            }
-        })
-    }//allFoods
-
     fun searchFoods(){
         viewModel.searchedFoods.observe(this, Observer { response ->
+            Log.e("takip", "searche girdi")
             when (response) {
                 is Resource.Success -> {
-                    Log.e("takip", " foods adapter okey")
                     response.data?.let { foodsResponse ->
+                        Log.e("takip", " searchhh ${response.data} ")
                         if (foodsResponse.foods == null) {
-                            foodList = ArrayList()
+                            foodList = ArrayList<Foods>()
                         } else {
                             foodList = foodsResponse.foods.toCollection(ArrayList())
                         }
                         foodsAdapter.differ.submitList(foodList)
+                        Log.e("takip", "search obaaaa")
                     }
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
-                        Log.e("takip", "foods adapter error")
+                        Log.e("takip", "search adapter error")
                     }
                 }
                 is Resource.Loading -> {
-                    //you can create a loading bar
-                    Log.e("takip", "foods adapter loading")
+                    Log.e("takip", "search adapter loading")
                 }
             }
         })
@@ -188,8 +179,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         ad.setPositiveButton(this.getString(R.string.apply)){ d, i ->
             //Snackbar.make(toolbar_main, "Filtre Ayarlandı!", Snackbar.LENGTH_LONG).show()
             editor.commit()
-            if (sp.getInt("listItem", 0)==0) allFoods()
-            else updateAdapter()
+            if (sp.getInt("listItem", 0)==0) FoodRequests().allFoods(this)
+            else FoodRequests().updateAdapter(this, foodList)
         }
         ad.setNegativeButton(this.getString(R.string.cancel)){ d, i ->
             //Snackbar.make(toolbar_main, "Filtre Ayarlanmadı!", Snackbar.LENGTH_LONG).show()
@@ -197,26 +188,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         ad.create().show()
     } //showAlert
 
-    fun updateAdapter(){
-        var checkedItem = sp.getInt("listItem", 0)
-
-        when(checkedItem){
-            0 -> {//default
-                //pass
-            }
-            1 -> foodList.sortBy { it.yemek_fiyat } //cheap to expensive
-            2 -> foodList.sortByDescending { it.yemek_fiyat } //expensive to cheap
-            3 -> foodList.sortBy { it.yemek_adi } //A to Z
-            4 -> foodList.sortByDescending { it.yemek_adi } //Z to A
-        }
-
-        foodsAdapter.differ.submitList(foodList)
-    } //updateAdapter
-
     fun searcedFoods(src:String){
-        //searchFoods()
-        //viewModel.searchedFoods(src)
-
+        viewModel.searchedFoods(src)
+        searchFoods()
     }
 
 }

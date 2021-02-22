@@ -4,23 +4,35 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
+import com.ipk.foodorderappv2.Db.FoodsDatabase
+import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
+import com.ipk.foodorderappv2.Repository.FoodsRepository
+import com.ipk.foodorderappv2.Ui.FoodsViewModel
+import com.ipk.foodorderappv2.Ui.FoodsViewModelProviderFactory
+import com.ipk.foodorderappv2.Ui.Requests.DetailedRequests
+import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_food.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class DetailedFoodActivity : AppCompatActivity() {
-
-    //private lateinit var food: Foods
+    lateinit var viewModel: FoodsViewModel
+    private lateinit var food: Foods
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_food)
 
-        /*food=intent.getSerializableExtra("food") as Foods
+        food=intent.getSerializableExtra("food") as Foods
 
         toolbar_title.setText(food.yemek_adi)
         setSupportActionBar(toolbar_main)
+
+        val foodsRepository= FoodsRepository(FoodsDatabase(this))
+        val viewModelProviderFactory= FoodsViewModelProviderFactory(foodsRepository)
+        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(FoodsViewModel::class.java)
 
         detailed_price.text="${food.yemek_fiyat} ${this.getString(R.string.TL)}"
         val url2 = "http://kasimadalan.pe.hu/yemekler/resimler/${food.yemek_resim_adi}"
@@ -41,34 +53,18 @@ class DetailedFoodActivity : AppCompatActivity() {
 
         btn_add.setOnClickListener {
             addToBasket(food, detailed_count.text.toString())
-        }*/
+        }
 
     } //onCreate
 
-    /*fun totalUpdate(){
+    fun totalUpdate(){
         detailed_price_count.text="${detailed_count.text} x ${food.yemek_fiyat} ${this.getString(R.string.TL)}"
-        var total=detailed_count.text.toString().toInt()*food.yemek_fiyat
+        var total=detailed_count.text.toString().toInt()*food.yemek_fiyat.toInt()
         detailed_total_price.text="${this.getString(R.string.total)}: ${total} ${this.getString(R.string.TL)}"
     } //totalUpdate
 
     fun addToBasket(food: Foods, count:String){
-        val url=this.getString(R.string.addToBasket)
-        val req= object : StringRequest(Request.Method.POST,url, Response.Listener { res ->
-            Log.d("Takip ekle cevap", res)
-            //Snackbar.make(btn_add, "${count} adet ${food.yemek_adi} eklendi.", Snackbar.LENGTH_SHORT).show()
-            startActivity(Intent(this@DetailedFoodActivity, MainActivity::class.java))
-        }, Response.ErrorListener { Log.d("Takip ekle","hata") }){
-            override fun getParams(): MutableMap<String, String> {
-                val params=HashMap<String,String>()
-                params["yemek_id"]=food.yemek_id.toString()
-                params["yemek_adi"]=food.yemek_adi
-                params["yemek_resim_adi"]=food.yemek_resim_adi
-                params["yemek_fiyat"]=food.yemek_fiyat.toString()
-                params["yemek_siparis_adet"]=count
-                return params
-            }
-        }
-
-        Volley.newRequestQueue(this@DetailedFoodActivity).add(req)
+        DetailedRequests().addToBasket(this, food, count)
+        finish()
     } //addToBasket*/
 }

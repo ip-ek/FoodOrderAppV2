@@ -3,6 +3,7 @@ package com.ipk.foodorderappv2.Models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(
         tableName = "yemekler"
@@ -18,4 +19,4 @@ data class Foods(
     val yemek_id: String,
     @SerializedName("yemek_resim_adi")
     val yemek_resim_adi: String
-)
+) :Serializable
