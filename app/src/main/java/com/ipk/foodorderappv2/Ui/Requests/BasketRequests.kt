@@ -3,11 +3,13 @@ package com.ipk.foodorderappv2.Ui.Requests
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.R
 import com.ipk.foodorderappv2.Ui.Activities.BasketActivity
 import com.ipk.foodorderappv2.Util.Resource
 import kotlinx.android.synthetic.main.activity_basket.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 class BasketRequests {
 
@@ -38,6 +40,7 @@ class BasketRequests {
                 }
                 is Resource.Error->{
                     response.message?.let { message ->
+                        Snackbar.make(mContext.btn_basket, "An error occured: $message", Snackbar.LENGTH_LONG).show()
                         Log.e("takip", "basket adapter error")
                     }
                 }
@@ -93,6 +96,7 @@ class BasketRequests {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
+                        Snackbar.make(mContext.btn_basket, "An error occured: $message", Snackbar.LENGTH_LONG).show()
                         Log.e("takip", "delete adapter error")
                     }
                 }

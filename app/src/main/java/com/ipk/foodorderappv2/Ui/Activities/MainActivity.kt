@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.ipk.foodorderappv2.Adapters.FoodsAdapter
 import com.ipk.foodorderappv2.Db.BasketDatabase
 import com.ipk.foodorderappv2.Db.FoodsDatabase
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         setSupportActionBar(toolbar_main)
 
         val foodsRepository=FoodsRepository(FoodsDatabase(this))
-        val viewModelProviderFactory= FoodsViewModelProviderFactory(foodsRepository)
+        val viewModelProviderFactory= FoodsViewModelProviderFactory(application, foodsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(FoodsViewModel::class.java)
 
         setupRv()
@@ -102,6 +103,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
+                        Snackbar.make(fab_main, "An error occured: $message", Snackbar.LENGTH_LONG).show()
                         Log.e("takip", "insert adapter error")
                     }
                 }
@@ -133,6 +135,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
+                        //Snackbar.make(fab_main, "An error occured: $message", Snackbar.LENGTH_LONG).show()
                         Log.e("takip", "search adapter error")
                     }
                 }
@@ -254,6 +257,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
+                        Snackbar.make(fab_main, "An error occured: $message", Snackbar.LENGTH_LONG).show()
                         Log.e("takip", "foods adapter error")
                     }
                 }

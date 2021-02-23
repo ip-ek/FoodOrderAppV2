@@ -4,10 +4,14 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.Ui.Activities.DetailedFoodActivity
 import com.ipk.foodorderappv2.Ui.Activities.MainActivity
 import com.ipk.foodorderappv2.Util.Resource
+import kotlinx.android.synthetic.main.activity_basket.*
+import kotlinx.android.synthetic.main.activity_detailed_food.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 class DetailedRequests {
 
@@ -29,6 +33,7 @@ class DetailedRequests {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
+                        Toast.makeText(context, "An error occured: $message", Toast.LENGTH_SHORT).show()
                         Log.e("takip", "insert adapter error")
                     }
                 }

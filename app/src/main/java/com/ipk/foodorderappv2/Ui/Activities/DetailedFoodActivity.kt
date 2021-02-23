@@ -31,7 +31,7 @@ class DetailedFoodActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_main)
 
         val foodsRepository= FoodsRepository(FoodsDatabase(this))
-        val viewModelProviderFactory= FoodsViewModelProviderFactory(foodsRepository)
+        val viewModelProviderFactory= FoodsViewModelProviderFactory(application,foodsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(FoodsViewModel::class.java)
 
         detailed_price.text="${food.yemek_fiyat} ${this.getString(R.string.TL)}"

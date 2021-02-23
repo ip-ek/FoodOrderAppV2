@@ -45,7 +45,7 @@ class BasketActivity : AppCompatActivity() {
 
     fun runViewModel(){
         val basketRepository=BasketRepository(BasketDatabase(this))
-        val viewModelProviderFactory= BasketViewModelProviderFactory(basketRepository)
+        val viewModelProviderFactory= BasketViewModelProviderFactory(application, basketRepository)
         viewModel=ViewModelProvider(this, viewModelProviderFactory).get(BasketViewModel::class.java)
     }
 
@@ -85,18 +85,4 @@ class BasketActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     } //onOptionsItemSelected
-
-/*
-   fun deleteBasket(){
-        Log.d("takip lanet", foodList.size.toString())
-        for(i in 0 until foodList.size){
-            deleteFromBasket(foodList[i])
-            Log.d("takip lanet", "say")
-        }
-        foodList=ArrayList() //isteklerin karşılanması zaman almaktadır
-        adapter= BasketFoodsAdapter(this@BasketActivity, foodList)
-        rv_basket.adapter=adapter
-        btn_basket.text = this.getString(R.string.empty_basket)
-    } //deleteBasket
-*/
 }
