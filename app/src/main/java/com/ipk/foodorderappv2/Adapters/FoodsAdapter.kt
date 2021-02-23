@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.SortedList
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
 import com.ipk.foodorderappv2.Ui.Activities.DetailedFoodActivity
+import com.ipk.foodorderappv2.Ui.Activities.MainActivity
 import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
 import com.ipk.foodorderappv2.Util.Constants.Companion.PICS_URL
 import com.squareup.picasso.Picasso
@@ -84,7 +85,7 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
             }
 
             btn_add_open.setOnClickListener {
-                FoodRequests().addToBasket(mContext, food,tw_count.text.toString())
+                (context as MainActivity).addToBasket(food,tw_count.text.toString())
                 card_detail.visibility= View.GONE
             }
 

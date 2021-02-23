@@ -29,9 +29,14 @@ class FoodsViewModel(val foodsRepository: FoodsRepository): ViewModel() {
     }
 
     fun searchedFoods(foodName:String)= viewModelScope.launch {
-        searchedFoods.postValue(Resource.Loading())
-        val response=foodsRepository.searchedFoods(foodName)
-        foods.postValue(handleSearchedFoodsResponse(response))
+        try {
+            searchedFoods.postValue(Resource.Loading())
+            val response=foodsRepository.searchedFoods(foodName)
+            searchedFoods.postValue(handleSearchedFoodsResponse(response))
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+
     }
 
     private fun handleFoodsResponse(response: Response<FoodsResponse>): Resource<FoodsResponse>{

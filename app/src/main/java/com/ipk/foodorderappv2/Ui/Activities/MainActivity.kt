@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         viewModel = ViewModelProvider(this, viewModelProviderFactory).get(FoodsViewModel::class.java)
 
         setupRv()
-        FoodRequests().allFoods(this)
+        allFoods()
 
         fab_main.setOnClickListener{
             startActivity(Intent(this@MainActivity, BasketActivity::class.java))
@@ -83,11 +84,42 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         }
     }//setupRv
 
+    fun addToBasket(foods: Foods, count:String){
+
+        viewModel.postInsertFoods(foods.yemek_id,foods.yemek_adi,
+                foods.yemek_resim_adi,foods.yemek_fiyat,count)
+
+        viewModel.postInsertFoods.observe(this, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    Log.e("takip", " insert okey ")
+                    response.data?.let { basketResponse ->
+                        //pass
+                    }
+                    Toast.makeText(this,"kaydedildi", Toast.LENGTH_SHORT).show()
+                    //updateFab(context)
+
+                }
+                is Resource.Error -> {
+                    response.message?.let { message ->
+                        Log.e("takip", "insert adapter error")
+                    }
+                }
+                is Resource.Loading -> {
+                    //you can create a loading bar
+                    Log.e("takip", "insert adapter loading")
+                }
+            }
+        })
+
+    }
+
     fun searchFoods(){
         viewModel.searchedFoods.observe(this, Observer { response ->
             Log.e("takip", "searche girdi")
             when (response) {
                 is Resource.Success -> {
+                    Log.d("search", "deneme ${response.data}")
                     response.data?.let { foodsResponse ->
                         Log.e("takip", " searchhh ${response.data} ")
                         if (foodsResponse.foods == null) {
@@ -96,7 +128,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                             foodList = foodsResponse.foods.toCollection(ArrayList())
                         }
                         foodsAdapter.differ.submitList(foodList)
-                        Log.e("takip", "search obaaaa")
+                        updateAdapter()
                     }
                 }
                 is Resource.Error -> {
@@ -145,14 +177,23 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     } //onBackPressed
 
     override fun onQueryTextSubmit(p0: String): Boolean {
-        Log.d("takip gönderilen arama", p0)
-        searcedFoods(p0)
+        Log.d("search gönderilen arama", p0)
+        try{
+            searcedFoods(p0)
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+
         return true
     } //onQueryTextSubmit
 
     override fun onQueryTextChange(p0: String): Boolean {
-        Log.d("takip harf girdikce", p0)
-        searcedFoods(p0)
+        Log.d("search harf girdikce", p0)
+        try{
+            searcedFoods(p0)
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
         return true
     } //onQueryTextChange
 
@@ -179,8 +220,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         ad.setPositiveButton(this.getString(R.string.apply)){ d, i ->
             //Snackbar.make(toolbar_main, "Filtre Ayarlandı!", Snackbar.LENGTH_LONG).show()
             editor.commit()
-            if (sp.getInt("listItem", 0)==0) FoodRequests().allFoods(this)
-            else FoodRequests().updateAdapter(this, foodList)
+            if (sp.getInt("listItem", 0)==0) allFoods()
+            else updateAdapter()
         }
         ad.setNegativeButton(this.getString(R.string.cancel)){ d, i ->
             //Snackbar.make(toolbar_main, "Filtre Ayarlanmadı!", Snackbar.LENGTH_LONG).show()
@@ -190,7 +231,58 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     fun searcedFoods(src:String){
         viewModel.searchedFoods(src)
+        foodList= ArrayList()
+        updateAdapter()
         searchFoods()
     }
+
+    fun allFoods(){
+        foodList = ArrayList<Foods>()
+        viewModel.foods.observe(this, Observer { response ->
+            when (response) {
+                is Resource.Success -> {
+                    Log.e("takip", " foods adapter okey")
+                    response.data?.let { foodsResponse ->
+                        if (foodsResponse.foods == null) {
+                            foodList = ArrayList()
+                        } else {
+                            foodList = foodsResponse.foods.toCollection(ArrayList())
+                        }
+                        foodsAdapter.differ.submitList(foodList)
+                        updateAdapter()
+                    }
+                }
+                is Resource.Error -> {
+                    response.message?.let { message ->
+                        Log.e("takip", "foods adapter error")
+                    }
+                }
+                is Resource.Loading -> {
+                    //you can create a loading bar
+                    Log.e("takip", "foods adapter loading")
+                }
+            }
+        })
+
+    }//allFoods
+
+    fun updateAdapter(){
+        sp = getSharedPreferences("FoodAppSh", Context.MODE_PRIVATE)
+        editor=sp.edit()
+
+        var checkedItem = sp.getInt("listItem", 0)
+
+        when(checkedItem){
+            0 -> {//default
+                //pass
+            }
+            1 -> foodList.sortBy { it.yemek_fiyat.toInt() } //cheap to expensive
+            2 -> foodList.sortByDescending { it.yemek_fiyat.toInt() } //expensive to cheap
+            3 -> foodList.sortBy { it.yemek_adi } //A to Z
+            4 -> foodList.sortByDescending { it.yemek_adi } //Z to A
+        }
+
+        foodsAdapter.differ.submitList(ArrayList<Foods>(foodList))
+    } //updateAdapter
 
 }
