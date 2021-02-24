@@ -1,4 +1,4 @@
-package com.ipk.foodorderappv2.Ui
+package com.ipk.foodorderappv2.Ui.ViewModels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

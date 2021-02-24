@@ -1,4 +1,4 @@
-package com.ipk.foodorderappv2.Ui
+package com.ipk.foodorderappv2.Ui.ViewModels
 
 import android.app.Application
 import android.content.Context
@@ -6,10 +6,8 @@ import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipk.foodorderappv2.FoodsApplication
 import com.ipk.foodorderappv2.Models.BasketResponse

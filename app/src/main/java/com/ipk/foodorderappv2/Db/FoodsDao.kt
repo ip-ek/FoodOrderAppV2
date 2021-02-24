@@ -6,7 +6,7 @@ import com.ipk.foodorderappv2.Models.Foods
 
 @Dao
 interface FoodsDao {
-    //başta çekip kaydederken lazım
+
     @Insert(onConflict = OnConflictStrategy.REPLACE) // already exist
     suspend fun upsert(foods: Foods): Long //id returns
 

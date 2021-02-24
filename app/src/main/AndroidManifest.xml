@@ -15,8 +15,8 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".Ui.Activities.BasketActivity" />
         <activity android:name=".Ui.Activities.DetailedFoodActivity" />
-        <activity android:name=".Ui.Activities.SplashScreenActivity"/>
-        <activity android:name=".Ui.Activities.MainActivity">
+        <activity android:name=".Ui.Activities.MainActivity"/>
+        <activity android:name=".Ui.Activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

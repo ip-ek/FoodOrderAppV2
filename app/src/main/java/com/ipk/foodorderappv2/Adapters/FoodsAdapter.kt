@@ -96,7 +96,5 @@ class FoodsAdapter(var mContext:Context) :RecyclerView.Adapter<FoodsAdapter.Card
                 card_detail.visibility=View.GONE
             }
         }
-
     } //openners
-
 }

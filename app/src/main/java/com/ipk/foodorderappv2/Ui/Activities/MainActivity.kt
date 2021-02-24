@@ -14,26 +14,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.snackbar.Snackbar
 import com.ipk.foodorderappv2.Adapters.FoodsAdapter
-import com.ipk.foodorderappv2.Db.BasketDatabase
 import com.ipk.foodorderappv2.Db.FoodsDatabase
 import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
-import com.ipk.foodorderappv2.Repository.BasketRepository
 import com.ipk.foodorderappv2.Repository.FoodsRepository
-import com.ipk.foodorderappv2.Ui.BasketViewModel
-import com.ipk.foodorderappv2.Ui.BasketViewModelProviderFactory
-import com.ipk.foodorderappv2.Ui.FoodsViewModel
-import com.ipk.foodorderappv2.Ui.FoodsViewModelProviderFactory
-import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
+import com.ipk.foodorderappv2.Ui.ViewModels.FoodsViewModel
+import com.ipk.foodorderappv2.Ui.ViewModels.FoodsViewModelProviderFactory
 import com.ipk.foodorderappv2.Util.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.card_design.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -44,6 +43,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     private lateinit var foodList: ArrayList<Foods>
     private lateinit var sp: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private lateinit var basketList: ArrayList<BasketFoods>
+    var amount =0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         setupRv()
         allFoods()
+        updateFabText()
 
         fab_main.setOnClickListener{
             startActivity(Intent(this@MainActivity, BasketActivity::class.java))
@@ -76,6 +78,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         viewModel.deleteFood(food)*/
 
     } //onCreate
+
+    override fun onResume() {
+        updateFabText()
+        super.onResume()
+    }
 
     private fun setupRv(){
         foodsAdapter= FoodsAdapter(this@MainActivity)
@@ -98,8 +105,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                         //pass
                     }
                     Toast.makeText(this,"kaydedildi", Toast.LENGTH_SHORT).show()
-                    //updateFab(context)
-
+                    updateFabText()
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
@@ -113,7 +119,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 }
             }
         })
-
     }
 
     fun searchFoods(){
@@ -121,9 +126,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
             Log.e("takip", "searche girdi")
             when (response) {
                 is Resource.Success -> {
-                    Log.d("search", "deneme ${response.data}")
                     response.data?.let { foodsResponse ->
-                        Log.e("takip", " searchhh ${response.data} ")
+                        Log.e("takip", " search ${response.data} ")
                         if (foodsResponse.foods == null) {
                             foodList = ArrayList<Foods>()
                         } else {
@@ -288,5 +292,67 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         foodsAdapter.differ.submitList(ArrayList<Foods>(foodList))
     } //updateAdapter
+
+    fun updateFabText(){ //all orders
+        val url="http://kasimadalan.pe.hu/yemekler/tum_sepet_yemekler.php"
+
+        val req = StringRequest(Request.Method.GET, url, Response.Listener { res->
+            Log.d("takip veri okuma: ", res)
+            jsonParseBasket(res)
+            amount=calculatePrice()
+            update()
+            Log.d("takip list:", basketList.size.toString())
+            Log.d("amount",amount.toString())
+        }, Response.ErrorListener { Log.d("takip hata: ", "Veri okuma") })
+
+        Volley.newRequestQueue(this@MainActivity).add(req)
+
+    } //allOrders
+
+    fun jsonParseBasket(res:String){
+        basketList= ArrayList()
+
+        try {
+            val jsonObj= JSONObject(res)
+            val foods =jsonObj.getJSONArray("sepet_yemekler")
+
+            for(i in 0 until foods.length()){
+                val f=foods.getJSONObject(i)
+
+                val yemek_id=f.getString("yemek_id")
+                val yemek_adi=f.getString("yemek_adi")
+                val yemek_resim_adi = f.getString("yemek_resim_adi")
+                val yemek_fiyat=f.getString("yemek_fiyat")
+                val yemek_siparis_adet=f.getString("yemek_siparis_adet")
+
+                val food=BasketFoods(null, yemek_adi, yemek_fiyat, yemek_id, yemek_resim_adi,yemek_siparis_adet)
+                basketList.add(food)
+            }
+
+        }catch (e: JSONException){
+            Log.d("takip hata:","parse hatası")
+            e.printStackTrace()
+        }
+
+    } //jsonParseBasket
+
+    fun calculatePrice():Int{
+        var price=0
+        for(i in 0 until basketList.size){
+            price+=basketList[i].yemek_fiyat.toInt()*basketList[i].yemek_siparis_adet.toInt()
+        }
+        return price
+    } //calculatePrice
+
+    fun update(){
+        Log.d("amount fonk",amount.toString())
+
+        if (amount==0){
+            fab_main.shrink()
+        }else{
+            fab_main.text=amount.toString()+"${this.getString(R.string.TL)}"
+            fab_main.extend()
+        }
+    } //update
 
 }

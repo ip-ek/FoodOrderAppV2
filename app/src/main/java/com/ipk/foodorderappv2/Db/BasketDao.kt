@@ -10,7 +10,6 @@ interface BasketDao {
     suspend fun upsert(basketfoods: BasketFoods): Long //id returns
 
     @Query("SELECT * FROM sepet_yemekler")
-    //there is no data change so no need susend desc - lifedata
     fun getAllBasket(): LiveData<List<BasketFoods>>
 
     @Delete

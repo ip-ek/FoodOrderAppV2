@@ -1,4 +1,4 @@
-package com.ipk.foodorderappv2.Ui
+package com.ipk.foodorderappv2.Ui.ViewModels
 
 import android.app.Application
 import android.content.Context
@@ -8,13 +8,10 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipk.foodorderappv2.FoodsApplication
 import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.Models.BasketResponse
-import com.ipk.foodorderappv2.Models.Foods
-import com.ipk.foodorderappv2.Models.FoodsResponse
 import com.ipk.foodorderappv2.Repository.BasketRepository
 import com.ipk.foodorderappv2.Util.Resource
 import kotlinx.coroutines.launch

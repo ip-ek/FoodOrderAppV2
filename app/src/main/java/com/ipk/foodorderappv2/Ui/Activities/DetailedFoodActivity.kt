@@ -1,18 +1,15 @@
 package com.ipk.foodorderappv2.Ui.Activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.ipk.foodorderappv2.Db.FoodsDatabase
 import com.ipk.foodorderappv2.Models.Foods
 import com.ipk.foodorderappv2.R
 import com.ipk.foodorderappv2.Repository.FoodsRepository
-import com.ipk.foodorderappv2.Ui.FoodsViewModel
-import com.ipk.foodorderappv2.Ui.FoodsViewModelProviderFactory
+import com.ipk.foodorderappv2.Ui.ViewModels.FoodsViewModel
+import com.ipk.foodorderappv2.Ui.ViewModels.FoodsViewModelProviderFactory
 import com.ipk.foodorderappv2.Ui.Requests.DetailedRequests
-import com.ipk.foodorderappv2.Ui.Requests.FoodRequests
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detailed_food.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -66,5 +63,5 @@ class DetailedFoodActivity : AppCompatActivity() {
     fun addToBasket(food: Foods, count:String){
         DetailedRequests().addToBasket(this, food, count)
         finish()
-    } //addToBasket*/
+    } //addToBasket
 }

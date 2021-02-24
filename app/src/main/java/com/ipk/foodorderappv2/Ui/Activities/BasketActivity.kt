@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ipk.foodorderappv2.Adapters.BasketAdapter
@@ -14,10 +13,9 @@ import com.ipk.foodorderappv2.Db.BasketDatabase
 import com.ipk.foodorderappv2.Models.BasketFoods
 import com.ipk.foodorderappv2.R
 import com.ipk.foodorderappv2.Repository.BasketRepository
-import com.ipk.foodorderappv2.Ui.BasketViewModel
-import com.ipk.foodorderappv2.Ui.BasketViewModelProviderFactory
+import com.ipk.foodorderappv2.Ui.ViewModels.BasketViewModel
+import com.ipk.foodorderappv2.Ui.ViewModels.BasketViewModelProviderFactory
 import com.ipk.foodorderappv2.Ui.Requests.BasketRequests
-import com.ipk.foodorderappv2.Util.Resource
 import kotlinx.android.synthetic.main.activity_basket.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.card_basket.*
@@ -38,8 +36,6 @@ class BasketActivity : AppCompatActivity() {
 
         setupRv()
         basketList=BasketRequests().allOrders(this)
-
-        //allOrders()
 
     } //onCreate
 

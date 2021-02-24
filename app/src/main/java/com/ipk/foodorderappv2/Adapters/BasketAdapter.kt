@@ -39,13 +39,12 @@ class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketAdapter.CardHolder {
         return CardHolder(
-                LayoutInflater.from(mContext).inflate(
-                        R.layout.card_basket,
-                        parent,
-                        false
-                )
+            LayoutInflater.from(mContext).inflate(
+                    R.layout.card_basket,
+                    parent,
+                    false
+            )
         )
-
     }
 
     override fun getItemCount(): Int {
@@ -68,6 +67,4 @@ class BasketAdapter(var mContext: Context) : RecyclerView.Adapter<BasketAdapter.
             }
         }
     }
-
-
 }

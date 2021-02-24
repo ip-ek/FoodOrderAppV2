@@ -28,8 +28,6 @@ class DetailedRequests {
                         //pass
                     }
                     Toast.makeText(context,"kaydedildi", Toast.LENGTH_SHORT).show()
-                    //updateFabText()
-
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->

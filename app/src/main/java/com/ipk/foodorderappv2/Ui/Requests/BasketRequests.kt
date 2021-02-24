@@ -90,9 +90,6 @@ class BasketRequests {
                     response.data?.let { basketResponse ->
                         //pass
                     }
-
-                    Log.e("takip", "deleteeeeeeeeeeeeeeeeeeeeeeeee")
-                    //allOrders(mContext)
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
